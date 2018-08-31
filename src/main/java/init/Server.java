@@ -7,7 +7,7 @@ import util.HttpSendJSON;
 
 public class Server {
     public static void main(String[] args) {
-        port(3000);
+        port(getHerokuAssignedPort());
 
         System.out.println("http://localhost:3000/hello");
         get("/hello", (request, response) -> "hello world");
@@ -79,5 +79,13 @@ public class Server {
 
             return json;
         });
+    }
+
+    static int getHerokuAssignedPort() {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        if (processBuilder.environment().get("PORT") != null) {
+            return Integer.parseInt(processBuilder.environment().get("PORT"));
+        }
+        return 3000; //return default port if heroku-port isn't set (i.e. on localhost)
     }
 }
